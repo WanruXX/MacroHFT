@@ -1,5 +1,6 @@
 import pathlib
 import sys
+    
 import random
 import argparse
 
@@ -17,10 +18,20 @@ ROOT = str(pathlib.Path(__file__).resolve().parents[3])
 sys.path.append(ROOT)
 sys.path.insert(0, ".")
 
-from MacroHFT.model.net import *
-from MacroHFT.env.low_level_env import Testing_Env, Training_Env
-from MacroHFT.RL.util.utili import get_ada, get_epsilon, LinearDecaySchedule
-from MacroHFT.RL.util.replay_buffer import ReplayBuffer
+from logging import raiseExceptions
+import torch
+import numpy as np
+import pandas as pd
+import torch.nn as nn
+import torch.nn.functional as F
+from torch.distributions.categorical import Categorical
+import sys
+import os
+
+from model.net import *
+from env.low_level_env import Testing_Env, Training_Env
+from RL.util.utili import get_ada, get_epsilon, LinearDecaySchedule
+from RL.util.replay_buffer import ReplayBuffer
 
 os.environ["MKL_NUM_THREADS"] = "1"
 os.environ["NUMEXPR_NUM_THREADS"] = "1"
@@ -74,6 +85,7 @@ class DQN(object):
             self.device = torch.device(args.device)
         else:
             self.device = torch.device("cpu")
+        
         self.result_path = os.path.join("./result/low_level", 
                                         '{}'.format(args.dataset), '{}'.format(args.clf), str(int(args.alpha)), args.label)
         self.label = int(args.label.split('_')[1])
@@ -366,9 +378,8 @@ class DQN(object):
             epoch_final_balance_train_list = []
             epoch_required_money_train_list = []
             epoch_reward_sum_train_list = []
-        best_model_path = os.path.join("./result/low_level", 
-                                        '{}'.format(self.dataset), '{}'.format(self.clf), str(self.label), 'best_model.pkl')
-        torch.save(best_model.state_dict(), best_model_path)
+        best_model_path = os.path.join(self.model_path, 'best_model.pkl')
+        torch.save(best_model, best_model_path)
 
 
     def val_cluster(self, epoch_path, save_path, initial_action):
@@ -438,6 +449,8 @@ class DQN(object):
 
 if __name__ == "__main__":
     args = parser.parse_args()
-    print(args)
-    agent = DQN(args)
-    agent.train()
+    with open('./logs/low_level/ETHUSDT/slope_3.log', 'w') as f:
+        sys.stdout = f
+        print(args)
+        agent = DQN(args)
+        agent.train()
