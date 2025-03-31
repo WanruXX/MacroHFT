@@ -27,7 +27,6 @@ from torch.distributions.categorical import Categorical
 import sys
 import os
 
-
 from model.net import *
 from env.high_level_env import Testing_Env, Training_Env
 from RL.util.utili import get_ada, get_epsilon, LinearDecaySchedule
@@ -607,6 +606,8 @@ class DQN(object):
 
 if __name__ == "__main__":
     args = parser.parse_args()
-    print(args)
-    agent = DQN(args)
-    agent.train()
+    with open('./logs/high_level/ETHUSDT.log', 'w') as f:
+        sys.stdout = f
+        print(args)
+        agent = DQN(args)
+        agent.train()
