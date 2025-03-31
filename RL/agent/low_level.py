@@ -449,7 +449,7 @@ class DQN(object):
 
 if __name__ == "__main__":
     args = parser.parse_args()
-    with open('./logs/low_level/ETHUSDT/slope_3.log', 'w') as f:
+    with open('./logs/low_level/ETHUSDT/vol_1.log', 'w') as f:
         sys.stdout = f
         print(args)
         agent = DQN(args)
