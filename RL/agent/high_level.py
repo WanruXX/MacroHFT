@@ -17,11 +17,11 @@ ROOT = str(pathlib.Path(__file__).resolve().parents[3])
 sys.path.append(ROOT)
 sys.path.insert(0, ".")
 
-from MacroHFT.model.net import *
-from MacroHFT.env.high_level_env import Testing_Env, Training_Env
-from MacroHFT.RL.util.utili import get_ada, get_epsilon, LinearDecaySchedule
-from MacroHFT.RL.util.replay_buffer import ReplayBuffer_High
-from MacroHFT.RL.util.memory import episodicmemory
+from model.net import *
+from env.high_level_env import Testing_Env, Training_Env
+from RL.util.utili import get_ada, get_epsilon, LinearDecaySchedule
+from RL.util.replay_buffer import ReplayBuffer_High
+from RL.util.memory import episodicmemory
 
 os.environ["MKL_NUM_THREADS"] = "1"
 os.environ["NUMEXPR_NUM_THREADS"] = "1"
@@ -596,6 +596,8 @@ class DQN(object):
 
 if __name__ == "__main__":
     args = parser.parse_args()
-    print(args)
-    agent = DQN(args)
-    agent.train()
+    with open('./logs/high_level/ETHUSDT.log', 'w') as f:
+        sys.stdout = f
+        print(args)
+        agent = DQN(args)
+        agent.train()
